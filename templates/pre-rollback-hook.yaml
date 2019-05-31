@@ -1,0 +1,18 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: "{{ .Release.Name }}-pre-rollback"
+  annotations:
+    "helm.sh/hook": pre-rollback
+    "helm.sh/hook-weight": "-5"
+    "helm.sh/hook-delete-policy": before-hook-creation
+spec:
+  template:
+    metadata:
+      name: "{{ .Release.Name }}-pre-install"
+    spec:
+      restartPolicy: Never
+      containers:
+      - name: pre-rollback
+        image: "alpine"
+        command: ["echo","{{ .Release.Revision }}"]
